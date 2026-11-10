@@ -1,0 +1,65 @@
+# ==============================================================================
+# 1. ENTORNOS VIRTUALES, CACHÉS Y BINARIOS
+# ==============================================================================
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+dist/
+
+# ==============================================================================
+# 2. CREDENCIALES, TOKENS OAUTH Y CONFIGURACIÓN PRIVADA
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*credentials*.json
+*token*.json
+*secret*.json
+.mcp_tokens/
+
+# ==============================================================================
+# 3. DATOS PERSONALES LOCALES DEL USUARIO (Privados en tu máquina, no en GitHub)
+# ==============================================================================
+# La base de conocimiento personal, borradores, capturas, contactos y métricas
+# reales de cada usuario permanecen exclusivamente en su equipo local.
+# Solo se versionan en GitHub los archivos '.example' y '.gitkeep'.
+
+knowledge/*
+!knowledge/*.example.md
+!knowledge/projects/
+knowledge/projects/*
+!knowledge/projects/*.example.md
+
+content/editorial-calendar.md
+content/drafts/*
+!content/drafts/.gitkeep
+!content/drafts/*.example.md
+content/approved/*
+!content/approved/.gitkeep
+content/published/*
+!content/published/.gitkeep
+content/assets/*
+!content/assets/.gitkeep
+
+networking/target-companies.md
+networking/opportunities.md
+networking/outreach-drafts/*
+!networking/outreach-drafts/.gitkeep
+!networking/outreach-drafts/*.example.md
+
+analytics/performance-history.csv
+analytics/monthly-reports/*
+!analytics/monthly-reports/.gitkeep
+
+# ==============================================================================
+# 4. ARCHIVOS DE SISTEMA Y EXCEPCIONES DEL FRAMEWORK
+# ==============================================================================
+.DS_Store
+Thumbs.db
+*.log
+
+# Excepción explícita para que las directivas genéricas del agente se incluyan en el repo
+!AGENTS.md
