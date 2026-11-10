@@ -108,14 +108,44 @@ Una vez inicializado tu perfil local, puedes usar instrucciones directas como:
 
 ## Conexión con LinkedIn mediante MCP / API Oficial (Fase 2)
 
-Por seguridad y cumplimiento de los Términos de Servicio de LinkedIn, este proyecto **no utiliza bots de navegador ni scraping**. La publicación directa se realiza mediante el estándar MCP sobre la API oficial de LinkedIn:
+Por seguridad y cumplimiento de los Términos de Servicio de LinkedIn, este proyecto **no utiliza bots de navegador ni scraping**. Incluye su propio servidor MCP local en Python ([`scripts/linkedin_mcp_server.py`](./scripts/linkedin_mcp_server.py)) y asistente OAuth 2.0 ([`scripts/linkedin_auth.py`](./scripts/linkedin_auth.py)) que se conectan directamente con la API oficial de LinkedIn:
+
+### Herramientas Expuestas por el Servidor MCP Integrado
+- **`get_profile`**: Consulta la información básica y el URN (`urn:li:person:...`) de la cuenta autenticada.
+- **`create_post`**: Publica actualizaciones de texto en el feed (`POST /rest/posts`).
+- **`create_image_post`**: Sube una o múltiples capturas limpias (`POST /rest/images`) y publica un post con galería de imágenes nativas.
+- **`create_document_post`**: Sube un archivo PDF (`POST /rest/documents`) y publica un documento/carrusel nativo (para eventos, congresos o papers).
+
+### Pasos de Configuración
 
 1. Entra en [LinkedIn Developers](https://www.linkedin.com/developers/apps) y crea una aplicación.
 2. En la pestaña **Products**, solicita acceso a:
    - *Share on LinkedIn* (otorga el permiso `w_member_social`).
    - *Sign In with LinkedIn using OpenID Connect* (otorga `openid` y `profile`).
-3. En la pestaña **Auth**, añade `http://localhost:3000/callback` en *Authorized redirect URLs* y copia tus credenciales en tu archivo `.env` local.
-4. Registra el servidor MCP en `%USERPROFILE%\.gemini\config\mcp_config.json` manteniendo la herramienta `create_post` bajo confirmación manual.
+3. En la pestaña **Auth**, añade `http://localhost:3000/callback` en *Authorized redirect URLs* y copia tu `CLIENT_ID` y `CLIENT_SECRET` en tu archivo `.env` local.
+4. Ejecuta el flujo de autorización local (abre tu navegador y guarda el token en `.mcp_tokens/linkedin_token.json`, ignorado por Git):
+   ```bash
+   uv run python scripts/linkedin_auth.py
+   ```
+5. Registra el servidor MCP en `%USERPROFILE%\.gemini\config\mcp_config.json`:
+   ```json
+   {
+     "mcpServers": {
+       "linkedin": {
+         "command": "C:/ruta/a/linkedin-personal-brand-agent/.venv/Scripts/python.exe",
+         "args": [
+           "C:/ruta/a/linkedin-personal-brand-agent/scripts/linkedin_mcp_server.py"
+         ],
+         "enabledTools": [
+           "get_profile",
+           "create_post",
+           "create_image_post",
+           "create_document_post"
+         ]
+       }
+     }
+   }
+   ```
 
 ---
 
@@ -131,7 +161,9 @@ linkedin-personal-brand-agent/
 ├── LICENSE                                     # Licencia MIT
 │
 ├── scripts/
-│   └── init_workspace.py                       # Inicializador automático de archivos locales
+│   ├── init_workspace.py                       # Inicializador automático de archivos locales
+│   ├── linkedin_auth.py                        # Flujo OAuth 2.0 local (localhost:3000/callback)
+│   └── linkedin_mcp_server.py                  # Servidor MCP oficial (texto, imágenes y PDFs)
 │
 ├── .agents/
 │   └── skills/                                 # Skills nativos de Google Antigravity
